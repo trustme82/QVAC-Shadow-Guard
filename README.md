@@ -46,7 +46,7 @@ requirements~780 MB free disk space for the LLM weights on first run
 
 ## Install
 
-Bashgit clone [https://github.com/euanm407-bit/-QVAC-Shadow-Guard.git](https://github.com/euanm407-bit/-QVAC-Shadow-Guard.git)
+Bashgit clone [(https://github.com/trustme82/QVAC-Shadow-Guard.git)](https://github.com/trustme82/QVAC-Shadow-Guard.git))
 cd -QVAC-Shadow-Guard
 npm install
 
