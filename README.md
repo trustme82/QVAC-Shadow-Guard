@@ -66,11 +66,12 @@ Loads the LLM once at startup, then starts a local server (http://localhost:1818
 ```
 
 ## Sample materials to test with
-Log & Script Analyzer:
+```Log & Script Analyzer:
 InputExpectsudo rm -rf /etc/systemdreliably flags High Risk and blocks executionnpm start --prefix /appreported as clean/safeeval(base64_decode('aW1wb3J0IG9z'))detected as obfuscated execution anomalyFile & Hash Verification:InputStatusMatchActione3b0c44298fc1c149afbf...SECURECLEANVerified against system baseline5d41402abc4b2a76b971...SECURECLEANVerified against system baseline
+```
 
 ## How it uses QVAC
-JavaScriptimport { loadModel, unloadModel, completion, LLAMA_3_2_1B_INST_Q4_0 } from "@qvac/sdk";
+```JavaScriptimport { loadModel, unloadModel, completion, LLAMA_3_2_1B_INST_Q4_0 } from "@qvac/sdk";
 
 const modelId = await loadModel({ modelSrc: LLAMA_3_2_1B_INST_Q4_0 });
 
@@ -89,10 +90,11 @@ for await (const token of run.tokenStream) analysis += token;
 
 await unloadModel({ modelId });
 See src/check.js for the full implementation, including local threat parsing and safety rules, and src/hashCheck.js for the non-AI hash verifier.
+```
 
 ## Why I built this
 
-Local security scanning requires absolute data privacy — system logs and credentials must never leak to third-party cloud APIs. Pairing an on-device LLM analyzer with a deterministic hash checker demonstrates how local AI can complement traditional security heuristics while keeping 100% of sensitive system data on the local machine.
+```Local security scanning requires absolute data privacy — system logs and credentials must never leak to third-party cloud APIs. Pairing an on-device LLM analyzer with a deterministic hash checker demonstrates how local AI can complement traditional security heuristics while keeping 100% of sensitive system data on the local machine.```
 
 ## Real bugs found and fixed during testing
 
