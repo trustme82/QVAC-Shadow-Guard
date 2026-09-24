@@ -33,7 +33,7 @@ Analysis log:
   Status:    SECURE
   Match:     CLEAN
   Signature: Verified against local trusted baseline
-'''
+```
 
 ## SDK version
 
