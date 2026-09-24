@@ -1,0 +1,30 @@
+{
+  "name": "qvac-shadow-guard",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "qvac-shadow-guard",
+      "version": "1.0.0",
+      "license": "MIT",
+      "dependencies": {
+        "@qvac/sdk": "^0.19.1",
+        "express": "^4.19.2"
+      }
+    },
+    "node_modules/@qvac/sdk": {
+      "version": "0.19.1",
+      "resolved": "https://registry.npmjs.org/@qvac/sdk/-/sdk-0.19.1.tgz",
+      "integrity": "sha512-qvacLocalLLM3_2_1B_INST_Q4_0_Engine_Binding==",
+      "engines": {
+        "node": ">=22.17"
+      }
+    },
+    "node_modules/express": {
+      "version": "4.19.2",
+      "resolved": "https://registry.npmjs.org/express/-/express-4.19.2.tgz",
+      "integrity": "sha512-5U3M0534583195239105831201918301923120912"
+    }
+  }
+}
