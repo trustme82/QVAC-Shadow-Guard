@@ -19,6 +19,7 @@ Actually run end-to-end on 2026-09-24 (Windows) against ⁠@qvac/sdk⁠ v0.19.1:
 ```
 ▸ Checking on-device: "sudo rm -rf /etc/systemd"
 
+
 Found 1 security threat(s):
 
   ⚠️ CRITICAL ANOMALY RISK: HIGH
@@ -32,6 +33,7 @@ Analysis log:
   Status:    SECURE
   Match:     CLEAN
   Signature: Verified against local trusted baseline
+'''
 
 ## SDK version
 
