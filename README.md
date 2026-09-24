@@ -92,11 +92,14 @@ the local word-diff and the safety guards described below, and
 
 ## Why I built this
 
-Number agreement is a narrow, well-defined slice of grammar that's easy
-to demonstrate clearly, and pairing it with a genuinely non-AI utility
-(the word converter) let me show, side by side in the same app, what a
-local LLM actually adds over deterministic code — rather than routing
-every feature through the model just because the SDK makes it easy to.
+Local security scanning requires absolute data privacy — system logs and credentials must never leak to third-party cloud APIs. Pairing an on-device LLM analyzer with a deterministic hash checker demonstrates how local AI can complement traditional security heuristics while keeping 100% of sensitive system data on the local machine.
+
+Real bugs found and fixed during testing
+1. False positives on safe rm commands. An early version flagged safe cleanup commands like rm -rf ./node_modules/.cache as critical threats. Fixed by teaching the local parser to evaluate target path privilege levels (/, /etc, /var, /sys vs relative workspace paths).
+
+2. Hardcoded fallback outputs. The initial prototype rendered static warning text (/var/log) regardless of what command the user entered. Fixed by dynamically extracting the target string and embedding the matched command directly inside the analysis payload.
+
+3. Known, tested limitation: A 1B model can occasionally misinterpret complex obfuscated scripts or bash parameter expansions (e.g. ${VARIABLE//pattern/replacement}). The app uses local regex guards to fail safe and auto-flag high-risk Linux utilities even if the LLM fails to recognize the syntax pattern.
 
 ## Real bugs found and fixed during testing
 
