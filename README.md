@@ -15,53 +15,90 @@ node src/check.js --hash "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca49599
 
 ## Verified output
 
-▸ Checking on-device: "sudo rm -rf /etc/systemd"
+Actually run end-to-end on 2026-09-21 (Windows) against `@qvac/sdk` v0.19.1:
 
-Found 1 security threat(s):
+```
+▸ Checking on-device: "The dogs is running in the park"
 
-  ⚠️ CRITICAL ANOMALY RISK: HIGH
+Found 1 number-agreement issue(s):
 
-Analysis log:
-  • Found potentially destructive command: sudo rm -rf /etc/systemd
-  • Action: Execution blocked by Shadow Guard rules engine.
-  • Recommended: Review user permissions and local logs.
-▸ "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" — local rule-based analysis (no AI call for this mode)
+  ✗ "is" → "are"
 
-  Status:    SECURE
-  Match:     CLEAN
-  Signature: Verified against local trusted baseline
+Corrected text:
+  The dogs are running in the park
+```
+
+```
+▸ "child" — local rule-based analysis (no AI call for this mode)
+
+  Detected: singular
+  Singular: child
+  Plural:   children
+```
+
+```
+▸ "boxes" — local rule-based analysis (no AI call for this mode)
+
+  Detected: plural
+  Singular: box
+  Plural:   boxes
+```
 
 ## SDK version
 
-Built and tested against @qvac/sdk v0.19.1 (see package.json).
+Built and tested against `@qvac/sdk` **v0.19.1** (see [package.json](package.json)).
 
 ## Requirements
-Node.js >= 22.17
 
-A machine that meets QVAC's system requirements
-
-~780 MB free disk space for the LLM weights on first run
+- Node.js `>= 22.17`
+- A machine that meets [QVAC's system requirements](https://docs.qvac.tether.io/system-requirements)
+- ~780 MB free disk space for the LLM weights on first run
 
 ## Install
 
-git clone [https://github.com/euanm407-bit/-QVAC-Shadow-Guard.git](https://github.com/euanm407-bit/-QVAC-Shadow-Guard.git)
-cd -QVAC-Shadow-Guard
+```bash
+git clone https://github.com/euanm407-bit/-QVAC-Plural-Singular-Checker.git
+cd -QVAC-Plural-Singular-Checker
 npm install
+```
 
 ## Run
 
-node src/check.js "<log or command to scan>"
-node src/check.js --hash "<md5 or sha256 hash>"
+```bash
+node src/check.js "<sentence to check>"
+node src/check.js --word "<noun>"
+```
 
 ## GUI mode
 
-Bash
+```bash
 npm run gui
-Loads the LLM once at startup, then starts a local server (http://localhost:18181 by default, override with PORT=8080 npm run gui).
-Two tabs: Log & Script Analyzer (AI) and File & Hash Verification (local), the second explicitly labeled as not using the model. Verified working end-to-end on 2026-09-24 for both tabs.
+```
+
+Loads the LLM once at startup, then starts a local server
+(`http://localhost:18181` by default, override with `PORT=8080 npm run gui`).
+Two tabs: **Sentence Check (AI)** and **Word Converter (local)**, the
+second explicitly labeled as not using the model. Verified working
+end-to-end on 2026-09-21 for both tabs.
+
 ## Sample materials to test with
 
-Log & Script Analyzer:InputExpectsudo rm -rf /etc/systemdreliably flags High Risk and blocks executionnpm start --prefix /appreported as clean/safeeval(base64_decode('aW1wb3J0IG9z'))detected as obfuscated execution anomalyFile & Hash Verification:InputStatusMatchActione3b0c44298fc1c149afbf...SECURECLEANVerified against system baseline5d41402abc4b2a76b971...SECURECLEANVerified against system baseline
+**Sentence check:**
+
+| Input | Expect |
+| --- | --- |
+| `The dogs is running in the park` | reliably fixed to "are" across repeated runs |
+| `She likes cats and dogs.` | reported as already correct |
+| `The children plays outside every day.` | inconsistent run-to-run — sometimes fixed correctly, sometimes not; a good input for seeing the limitation below in action |
+
+**Word converter:**
+
+| Input | Detected | Singular | Plural |
+| --- | --- | --- | --- |
+| `child` | singular | child | children |
+| `boxes` | plural | box | boxes |
+| `sheep` | uncountable | — same for both — | |
+| `cactus` | singular | cactus | cacti |
 
 ## How it uses QVAC
 
@@ -92,14 +129,11 @@ the local word-diff and the safety guards described below, and
 
 ## Why I built this
 
-Local security scanning requires absolute data privacy — system logs and credentials must never leak to third-party cloud APIs. Pairing an on-device LLM analyzer with a deterministic hash checker demonstrates how local AI can complement traditional security heuristics while keeping 100% of sensitive system data on the local machine.
-
-Real bugs found and fixed during testing
-1. False positives on safe rm commands. An early version flagged safe cleanup commands like rm -rf ./node_modules/.cache as critical threats. Fixed by teaching the local parser to evaluate target path privilege levels (/, /etc, /var, /sys vs relative workspace paths).
-
-2. Hardcoded fallback outputs. The initial prototype rendered static warning text (/var/log) regardless of what command the user entered. Fixed by dynamically extracting the target string and embedding the matched command directly inside the analysis payload.
-
-3. Known, tested limitation: A 1B model can occasionally misinterpret complex obfuscated scripts or bash parameter expansions (e.g. ${VARIABLE//pattern/replacement}). The app uses local regex guards to fail safe and auto-flag high-risk Linux utilities even if the LLM fails to recognize the syntax pattern.
+Number agreement is a narrow, well-defined slice of grammar that's easy
+to demonstrate clearly, and pairing it with a genuinely non-AI utility
+(the word converter) let me show, side by side in the same app, what a
+local LLM actually adds over deterministic code — rather than routing
+every feature through the model just because the SDK makes it easy to.
 
 ## Real bugs found and fixed during testing
 
@@ -141,3 +175,4 @@ All three are visible in the commit history.
 ## License
 
 [MIT](LICENSE)
+
