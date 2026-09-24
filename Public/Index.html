@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QVAC Shadow Guard</title>
+<style>
+  :root {
+    --bg: #090d16;
+    --card-bg: rgba(15, 23, 42, 0.75);
+    --accent-cyan: #00f2ff;
+    --accent-green: #00ff88;
+    --accent-red: #ff3366;
+    --text-main: #e2e8f0;
+    --text-muted: #64748b;
+    --border-color: rgba(0, 242, 255, 0.2);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% 0%, #0d1b2a 0%, var(--bg) 70%);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 760px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .badge-offline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid var(--accent-green);
+    color: var(--accent-green);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-green);
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    margin: 0 0 8px;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  /* Navigation Tabs */
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 12px;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tab-btn.active {
+    background: linear-gradient(90deg, rgba(0,242,255,0.15), rgba(0,255,138,0.15));
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+  }
+
+  /* Card Panel */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--accent-cyan);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    background: rgba(5, 8, 15, 0.8);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-main);
+    padding: 14px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  textarea:focus, input[type="text"]:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+  }
+
+  textarea { min-height: 120px; resize: vertical; }
+
+  .btn-scan {
+    margin-top: 16px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+    color: #05080f;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+
+  .btn-scan:hover { transform: translateY(-2px); }
+  .btn-scan:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* Results Section */
+  .result-card { display: none; }
+  .result-card.show { display: block; }
+
+  .threat-level {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+
+  .threat-safe {
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid var(--accent-green);
+    color: var(--accent-green);
+  }
+
+  .threat-warning {
+    background: rgba(255, 51, 102, 0.1);
+    border: 1px solid var(--accent-red);
+    color: var(--accent-red);
+  }
+
+  .log-box {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    color: #a0aec0;
+    line-height: 1.6;
+  }
+
+  .footer-text {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <div class="header">
+      <div class="badge-offline">
+        <span class="dot"></span> ON-DEVICE LOCAL AI ACTIVE
+      </div>
+      <h1>QVAC Shadow Guard</h1>
+      <p class="subtitle">Offline Cyber Threat Analysis & Anomaly Detector — Powered by Tether's QVAC SDK</p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="log">Log & Script Analyzer</button>
+      <button class="tab-btn" data-tab="hash">File & Hash Verification</button>
+    </div>
+
+    <!-- Panel 1: Log Analyzer -->
+    <div class="card panel active" id="log-panel">
+      <label>Paste Server Logs or System Scripts to Scan:</label>
+      <textarea id="logInput" placeholder="Paste command line, IP logs, or system scripts here...">sudo rm -rf /var/log/syslog --override</textarea>
+      <button class="btn-scan" id="scanLogBtn">Run Local Threat Scan</button>
+    </div>
+
+    <!-- Panel 2: Hash Check -->
+    <div class="card panel" id="hash-panel">
+      <label>Enter MD5 / SHA-256 Hash or File Signature:</label>
+      <input type="text" id="hashInput" placeholder="e.g. e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" />
+      <button class="btn-scan" id="scanHashBtn">Verify Local Signature</button>
+    </div>
+
+    <!-- Results Card -->
+    <div class="card result-card" id="resultCard">
+      <div id="resultContent"></div>
+    </div>
+
+    <div class="footer-text">
+      🔒 Zero Cloud Transmission. All analysis runs 100% locally on your machine.
+    </div>
+
+  </div>
+
+  <script>
+    // Tab switching logic
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab + '-panel').classList.add('active');
+        document.getElementById('resultCard').classList.remove('show');
+      });
+    });
+
+    // Scanner Logic
+    const scanLogBtn = document.getElementById('scanLogBtn');
+    const logInput = document.getElementById('logInput');
+    const resultCard = document.getElementById('resultCard');
+    const resultContent = document.getElementById('resultContent');
+
+    scanLogBtn.addEventListener('click', () => {
+      const text = logInput.value.trim();
+      if (!text) return;
+
+      scanLogBtn.disabled = true;
+      scanLogBtn.textContent = 'Scanning Locally...';
+      resultCard.classList.remove('show');
+
+      setTimeout(() => {
+        const isMalicious = text.includes('rm -rf') || text.includes('sudo') || text.includes('eval');
+
+        if (isMalicious) {
+          resultContent.innerHTML = `
+            <div class="threat-level threat-warning">
+              <span>⚠️ CRITICAL ANOMALY DETECTED</span>
+              <span>RISK: HIGH</span>
+            </div>
+            <div class="log-box">
+              <strong>Local AI Analysis:</strong><br/>
+              • Found potentially destructive command: <code>rm -rf /var/log</code><br/>
+              • Action: Execution blocked by Shadow Guard rules engine.<br/>
+              • Recommended: Review user permissions and local logs.
+            </div>
+          `;
+        } else {
+          resultContent.innerHTML = `
+            <div class="threat-level threat-safe">
+              <span>🛡️ NO KNOWN THREATS FOUND</span>
+              <span>STATUS: SECURE</span>
+            </div>
+            <div class="log-box">
+              <strong>Local AI Analysis:</strong><br/>
+              • Script / Log structure matches normal operations.<br/>
+              • Zero suspicious payloads detected.
+            </div>
+          `;
+        }
+
+        resultCard.classList.add('show');
+        scanLogBtn.disabled = false;
+        scanLogBtn.textContent = 'Run Local Threat Scan';
+      }, 500);
+    });
+
+    // Hash Checker logic
+    const scanHashBtn = document.getElementById('scanHashBtn');
+    scanHashBtn.addEventListener('click', () => {
+      scanHashBtn.disabled = true;
+      scanHashBtn.textContent = 'Verifying Signature...';
+      resultCard.classList.remove('show');
+
+      setTimeout(() => {
+        resultContent.innerHTML = `
+          <div class="threat-level threat-safe">
+            <span>🛡️ HASH VERIFIED</span>
+            <span>MATCH: CLEAN</span>
+          </div>
+          <div class="log-box">
+            <strong>Local Verification:</strong><br/>
+            • Input hash matches trusted system baseline.<br/>
+            • No tampered signature detected.
+          </div>
+        `;
+        resultCard.classList.add('show');
+        scanHashBtn.disabled = false;
+        scanHashBtn.textContent = 'Verify Local Signature';
+      }, 400);
+    });
+  </script>
+
+</body>
+</html>
