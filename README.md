@@ -56,7 +56,7 @@ npm install
 node src/check.js "<log or command to scan>"
 node src/check.js --hash "<md5 or sha256 hash>"
 
-##GUI mode
+## GUI mode
 
 Bash
 
