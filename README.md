@@ -51,18 +51,19 @@ cd -QVAC-Shadow-Guard
 npm install
 
 ## Run
- Bash
+ ```Bash
 
 node src/check.js "<log or command to scan>"
 node src/check.js --hash "<md5 or sha256 hash>"
-
+```
 ## GUI mode
 
-Bash
+```Bash
 
 npm run gui
 
 Loads the LLM once at startup, then starts a local server (http://localhost:18181 by default, override with PORT=8080 npm run gui).Two tabs: Log & Script Analyzer (AI) and File & Hash Verification (local), the second explicitly labeled as not using the model. Verified working end-to-end on 2026-09-24 for both tabs.
+```
 
 ## Sample materials to test with
 Log & Script Analyzer:
